@@ -1,92 +1,9 @@
-name: Build Custom Frida
-
+name: nx-x86_64
 on:
-  workflow_call:
-    inputs:
-      frida_version:
-        description: Frida version
-        required: false
-        type: string
-        default: "17.16.4"
-      custom_name:
-        description: Replacement for the internal Frida name
-        required: false
-        type: string
-        default: ajeossida
-      arch:
-        description: Comma-separated target architectures
-        required: false
-        type: string
-        default: android-arm64
-      port:
-        description: Custom port; empty keeps the upstream default
-        required: false
-        type: string
-        default: ""
-      extended:
-        description: Apply extended anti-detection patches
-        required: false
-        type: boolean
-        default: true
-      temp_fixes:
-        description: Apply optional temporary stability fixes
-        required: false
-        type: boolean
-        default: false
-      strict_wx:
-        description: Harden Frida-owned persistent anonymous RWX mappings on Android
-        required: false
-        type: boolean
-        default: false
   workflow_dispatch:
-    inputs:
-      frida_version:
-        description: Frida version
-        required: true
-        type: string
-        default: "17.16.4"
-      custom_name:
-        description: Replacement for the internal Frida name
-        required: true
-        type: string
-        default: ajeossida
-      arch:
-        description: Target architecture(s)
-        required: true
-        type: choice
-        default: android-arm64
-        options:
-          - android-arm64
-          - android-arm
-          - android-arm64,android-arm
-          - android-arm64,android-arm,android-x86_64,android-x86
-      port:
-        description: Custom port; empty keeps the upstream default
-        required: false
-        type: string
-        default: ""
-      extended:
-        description: Apply extended anti-detection patches
-        required: false
-        type: boolean
-        default: true
-      temp_fixes:
-        description: Apply optional temporary stability fixes
-        required: false
-        type: boolean
-        default: false
-      strict_wx:
-        description: Harden Frida-owned persistent anonymous RWX mappings on Android
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
-
-concurrency:
-  group: build-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
   build:
@@ -94,15 +11,15 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 180
     env:
-      ARCHITECTURES: ${{ inputs.arch }}
-      CUSTOM_NAME: ${{ inputs.custom_name }}
-      CUSTOM_PORT: ${{ inputs.port }}
-      EXTENDED_PATCHES: ${{ inputs.extended }}
-      FRIDA_VERSION: ${{ inputs.frida_version }}
+      ARCHITECTURES: android-x86_64
+      CUSTOM_NAME: nxcodec
+      CUSTOM_PORT: 27042
+      EXTENDED_PATCHES: true
+      FRIDA_VERSION: 17.16.4
       NDK_ARCHIVE_SHA1: 87e2bb7e9be5d6a1c6cdf5ec40dd4e0c6d07c30b
       NDK_ARCHIVE_URL: https://dl.google.com/android/repository/android-ndk-r29-linux.zip
-      STRICT_WX: ${{ inputs.strict_wx }}
-      TEMPORARY_FIXES: ${{ inputs.temp_fixes }}
+      STRICT_WX: true
+      TEMPORARY_FIXES: false
 
     steps:
       - name: Check out builder
